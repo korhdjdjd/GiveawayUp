@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Розыгрыши</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&display=swap">
+<style>
+:root{--bg:#0e0e0f;--card:#161617;--ln:#2c2c2f;--tx:#f2f2f0;--mut:#85858a;--ac:#f2f2f0;--act:#0e0e0f;--sh:#66666a;--ok:#6ee7a0}
+[data-theme=light]{--bg:#f3f2ee;--card:#fff;--ln:#dcdad3;--tx:#111;--mut:#80807a;--ac:#111;--act:#fff;--sh:#888;--ok:#15803d}
+[data-theme=blue]{--bg:#eef5fc;--card:#fff;--ln:#cfe0f1;--tx:#0d2236;--mut:#6f8aa3;--ac:#2a9df4;--act:#fff;--sh:#1769aa;--ok:#15803d}
+[data-theme=amber]{--bg:#1b120d;--card:#251a13;--ln:#3b2a1f;--tx:#fbeee3;--mut:#a78d7a;--ac:#ff8a2b;--act:#1b120d;--sh:#a24d08;--ok:#a3e635}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{background:var(--bg);color:var(--tx);font:15px/1.45 'Golos Text',system-ui,sans-serif;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+button,input,textarea{font-family:inherit}
+.app{max-width:480px;margin:0 auto;padding:14px 16px 48px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:8px}
+.sg{display:flex;border:1.5px solid var(--ln);border-radius:11px;padding:2px;gap:2px;background:var(--card)}
+.sg button{flex:1;border:0;background:none;color:var(--mut);font-weight:600;font-size:13px;padding:7px 12px;border-radius:8px;cursor:pointer;white-space:nowrap}
+.sg button.on{background:var(--ac);color:var(--act)}
+#tabs{overflow-x:auto;margin-bottom:14px}#tabs button{flex:none}
+.dots{display:flex;gap:8px;margin-left:auto}.dots i{width:22px;height:22px;border-radius:7px;border:1.5px solid var(--ln);cursor:pointer}.dots i.on{outline:2px solid var(--tx);outline-offset:2px}
+.card{border:1.5px solid var(--ln);background:var(--card);border-radius:14px;padding:15px;margin-bottom:12px}
+h1{font-size:19px;margin:0 0 4px;line-height:1.25}p{margin:4px 0}
+.mut{color:var(--mut);font-size:13px}
+.lbl{font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--mut);margin:14px 0 6px;font-weight:600}.lbl:first-child{margin-top:0}
+.row{display:flex;align-items:center;gap:10px}.row .b{flex:1}.sp{justify-content:space-between}
+.b{display:block;width:100%;border:0;border-radius:12px;background:var(--ac);color:var(--act);font-weight:700;font-size:15px;padding:13px;cursor:pointer;box-shadow:0 3px 0 var(--sh);transition:transform .08s,box-shadow .08s}
+.b:active{transform:translateY(3px);box-shadow:0 0 0 var(--sh)}.b:disabled{opacity:.35;pointer-events:none}
+.b.g{background:var(--card);color:var(--tx);border:1.5px solid var(--ln);box-shadow:0 3px 0 var(--ln)}
+.b.r{background:#e5484d;color:#fff;box-shadow:0 3px 0 #8c2327}
+.b.s{display:inline-block;width:auto;flex:none;padding:8px 13px;font-size:13px;border-radius:10px}
+a.b{text-decoration:none;text-align:center}
+.in{width:100%;background:var(--bg);color:var(--tx);border:1.5px solid var(--ln);border-radius:10px;padding:11px 12px;font:inherit;outline:0;resize:vertical}.in:focus{border-color:var(--tx)}
+.pi{display:block;width:100%;height:auto;border-radius:9px;border:1.5px solid var(--ln);margin-bottom:12px}
+.pb{margin:6px 0;white-space:pre-wrap;word-break:break-word}.pb a{color:inherit;text-decoration:underline}
+.pb blockquote{border-left:3px solid var(--tx);margin:6px 0;padding-left:8px;color:var(--mut)}
+.pb code,.pb pre{font-family:ui-monospace,Menlo,monospace;background:var(--bg);border-radius:4px;padding:0 3px}.pb pre{padding:8px;overflow:auto}
+.spl{filter:blur(5px);cursor:pointer;transition:.2s}.spl.o{filter:none}
+.meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.meta span,.pl{font-size:12px;border:1.5px solid var(--ln);border-radius:7px;padding:1px 8px;color:var(--mut);white-space:nowrap}
+.tr{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 0;border-top:1.5px dashed var(--ln)}.tr:first-child{border-top:0;padding-top:0}
+.tt{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-width:0}.tt b{word-break:break-all}
+.ac2{display:flex;flex-direction:column;gap:7px}.okk{color:var(--ok);font-weight:700;font-size:13px}
+.cap{position:relative;height:170px;border-radius:10px;border:1.5px solid var(--ln);background:radial-gradient(var(--ln) 1px,transparent 1px) 0 0/14px 14px;margin:10px 0}
+.pt{position:absolute;width:40px;height:40px;margin:-20px;border:1.5px solid var(--tx);border-radius:8px;background:var(--card);display:flex;align-items:center;justify-content:center;font-weight:700;cursor:pointer;transform:rotate(var(--r));transition:.15s}
+.pt.done{background:var(--ac);color:var(--act);transform:rotate(var(--r)) scale(.8)}
+.shake{animation:sh .3s}@keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{border:1.5px solid var(--ln);border-radius:10px;padding:10px 6px;text-align:center}.stat b{display:block;font-size:22px}
+.ring{width:80px;height:80px;position:relative;flex:none}.ring svg{transform:rotate(-90deg)}.ring b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}.ring circle{fill:none;stroke-width:6}
+.stp{display:inline-flex;align-items:center;border:1.5px solid var(--ln);border-radius:10px;overflow:hidden}.stp button{width:38px;height:38px;border:0;background:var(--bg);color:var(--tx);font-size:18px;cursor:pointer}.stp button:active{background:var(--ln)}.stp span{min-width:52px;text-align:center;font-weight:700}
+.tg{width:46px;height:26px;border-radius:13px;border:1.5px solid var(--ln);background:var(--bg);position:relative;cursor:pointer;transition:.2s;flex:none}
+.tg i{position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:var(--mut);transition:.2s}.tg.on{background:var(--ac);border-color:var(--ac)}.tg.on i{left:22px;background:var(--act)}
+.li{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;text-align:left;border:1.5px solid var(--ln);background:var(--card);color:var(--tx);border-radius:12px;padding:13px;margin-bottom:10px;cursor:pointer;box-shadow:0 3px 0 var(--ln)}.li:active{transform:translateY(3px);box-shadow:none}
+.rg{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start;margin-bottom:12px}
+.rc{border:1.5px solid var(--ln);background:var(--card);border-radius:12px;padding:8px;cursor:pointer;box-shadow:0 3px 0 var(--ln)}.rc:active{transform:translateY(3px);box-shadow:none}
+.rc img,.ph0{display:block;width:100%;height:auto;border-radius:8px;margin-bottom:8px}.ph0{aspect-ratio:4/3;background:repeating-linear-gradient(135deg,var(--bg) 0 8px,var(--ln) 8px 9px)}
+.rc b{display:block;word-break:break-all}
+.lk{border:1.5px dashed var(--ln);border-radius:10px;padding:10px;word-break:break-all;font-size:13px;user-select:all}
+.bar{height:8px;border:1.5px solid var(--ln);border-radius:5px;margin-top:10px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ac)}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:flex-end;justify-content:center;z-index:20}.ov.on{display:flex}
+.sheet{background:var(--bg);width:100%;max-width:480px;max-height:92%;overflow:auto;border:1.5px solid var(--ln);border-bottom:0;border-radius:20px 20px 0 0;padding:0 16px calc(22px + env(safe-area-inset-bottom,0px));animation:sl .28s ease-out}
+@keyframes sl{from{transform:translateY(100%)}}
+.gw{padding:10px 0 16px;touch-action:none;cursor:grab}.gw i{display:block;width:44px;height:4px;border-radius:2px;background:var(--ln);margin:0 auto}
+.toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translate(-50%,90px);background:var(--ac);color:var(--act);padding:10px 16px;border-radius:11px;font-weight:600;font-size:14px;transition:.25s;z-index:40;max-width:90%;text-align:center}.toast.on{transform:translate(-50%,0)}
+.hide{display:none!important}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="sg hide" id="mode"><button data-m="post" class="on">Участие</button><button data-m="bot">Меню</button></div>
+    <div class="dots" id="dots"><i data-t="dark" class="on" style="background:#0e0e0f"></i><i data-t="light" style="background:#f3f2ee"></i><i data-t="blue" style="background:#2a9df4"></i><i data-t="amber" style="background:#ff8a2b"></i></div>
+  </div>
+  <div class="card hide" id="lock"><h1>Открой через Telegram</h1><p class="mut">Это мини-приложение работает только внутри Telegram. Запусти его через бота.</p></div>
+  <div class="mut" id="ld" style="text-align:center;padding:40px 0">Загрузка…</div>
+
+  <div id="vPost" class="hide">
+    <div class="card" id="pc"></div>
+    <div class="card" id="capCard"><div class="lbl">Проверка</div><b>Нажми по порядку 1, 2, 3</b><div class="cap" id="cap"></div><button class="b g" id="capRe">Обновить</button></div>
+    <button class="b hide" id="openT">Открыть задания</button>
+  </div>
+
+  <div id="vBot" class="hide">
+    <div class="sg" id="tabs"><button class="on" data-v="prof">Профиль</button><button data-v="list">Мои розыгрыши</button><button data-v="rec">Рекомендации</button><button data-v="new">Создать</button><button data-v="adm" id="tAdm" class="hide">Админ</button></div>
+    <div id="bProf"></div><div id="bList" class="hide"></div><div id="bRec" class="hide"></div>
+    <div id="bNew" class="hide">
+      <div class="card"><div class="lbl">Основное</div>
+        <input class="in" id="fT" maxlength="120" placeholder="Название розыгрыша">
+        <textarea class="in" id="fD" placeholder="Описание (текст поста)" style="margin-top:8px;min-height:84px"></textarea>
+        <div class="row" style="margin-top:10px"><button class="b g s" id="fPb">Загрузить фото</button><button class="b g s hide" id="fPx">Убрать</button></div>
+        <input type="file" id="fP" accept="image/*" class="hide"><img id="fPv" class="pi hide" style="margin:10px 0 0">
+        <div class="lbl">Канал публикации</div><input class="in" id="fC" placeholder="@channel"><p class="mut" style="margin-top:6px">Бот должен быть админом канала.</p>
+      </div>
+      <div class="card"><div class="lbl">На что подписаться</div>
+        <div id="sl"></div>
+        <div class="sg" id="fk"><button data-k="канал" class="on">Канал</button><button data-k="чат">Чат</button><button data-k="буст">Буст</button></div>
+        <input class="in" id="fh" placeholder="@username или ссылка" style="margin-top:8px">
+        <div class="mut hide" id="fbn" style="margin-top:8px">Вписывать ничего не нужно: буст проверяется на канале, где опубликуешь розыгрыш.</div>
+        <div class="row sp" style="margin-top:12px"><span>Обязательно</span><div class="tg" id="fr"><i></i></div></div>
+        <div class="row sp" style="margin-top:10px"><span>Бонус к шансу</span><div class="stp" id="fp"><button data-d="-5">−</button><span>20%</span><button data-d="5">+</button></div></div>
+        <button class="b g" id="fAdd" style="margin-top:14px">Добавить условие</button>
+      </div>
+      <div class="card"><div class="row sp"><span>Победителей</span><div class="stp" id="fw"><button data-d="-1">−</button><span>1</span><button data-d="1">+</button></div></div>
+        <div class="lbl">Окончание: дата и время</div>
+        <div class="row"><input class="in" id="fdt" inputmode="numeric" placeholder="ДД.ММ.ГГГГ"><input class="in" id="ftm" inputmode="numeric" placeholder="ЧЧ:ММ" style="width:92px;flex:none"></div>
+        <div class="row" id="chips" style="margin-top:10px"><button class="b g s" data-n="1">+1 день</button><button class="b g s" data-n="3">+3 дня</button><button class="b g s" data-n="7">+7 дней</button></div>
+      </div>
+      <div class="card"><div class="lbl">Текст кнопок</div><div class="mut" style="margin-bottom:5px">Кнопка в посте</div><input class="in" id="fBp" maxlength="24" value="Участвовать"><div class="mut" style="margin:12px 0 5px">Кнопка в боте</div><input class="in" id="fBb" maxlength="24" value="Участвовать"></div>
+      <button class="b" id="fGo">Отправить в чат</button>
+      <p class="mut" style="margin-top:10px">Бот пришлёт черновик в личный чат. Там можно изменить текст (с форматированием и премиум-эмодзи), заменить фото и опубликовать.</p>
+    </div>
+    <div id="bAdm" class="hide"></div>
+  </div>
+</div>
+
+<div class="ov" id="ovT"><div class="sheet"><div class="gw"><i></i></div>
+  <button class="b" id="jn">Участвовать</button>
+  <div class="card row" style="margin:14px 0 12px"><div class="ring"><svg width="80" height="80"><circle cx="40" cy="40" r="35" stroke="var(--ln)"/><circle id="rg" cx="40" cy="40" r="35" stroke="var(--ac)" stroke-dasharray="220" stroke-dashoffset="220" style="transition:stroke-dashoffset .5s"/></svg><b id="mul">×1.00</b></div><div><b>Твой шанс</b><div class="mut">Выполняй условия и жми «Проверить»</div></div></div>
+  <div class="card" id="tk"></div>
+</div></div>
+<div class="ov" id="ovD"><div class="sheet"><div class="gw"><i></i></div><div id="dc"></div></div></div>
+<div class="ov" id="ovI"><div class="sheet"><div class="gw"><i></i></div><h1>В рекомендации со скидкой</h1><div id="ic" style="margin-top:12px"></div></div></div>
+<div class="ov" id="ovR"><div class="sheet"><div class="gw"><i></i></div><h1>Новая рекомендация</h1>
+  <div class="lbl" style="margin-top:14px">Название канала</div><input class="in" id="rCh" placeholder="@channel">
+  <div class="lbl">Ссылка на розыгрыш</div><input class="in" id="rLk" placeholder="https://t.me/…">
+  <div class="lbl">Заметка (оплата, срок)</div><input class="in" id="rNt" placeholder="видна только админам">
+  <div class="lbl">Фото розыгрыша</div><button class="b g s" id="rPb">Загрузить фото</button>
+  <input type="file" id="rP" accept="image/*" class="hide"><img id="rPv" class="pi hide" style="margin:10px 0 0">
+  <button class="b" id="rAdd" style="margin-top:16px">Добавить</button></div></div>
+<div class="ov" id="ovC" style="z-index:30"><div class="sheet"><div class="gw"><i></i></div><h1 id="cfH"></h1><p class="mut" id="cfT"></p><div class="row" style="margin-top:14px"><button class="b g" id="cfN">Отмена</button><button class="b r" id="cfY">Да</button></div></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+var $=function(s){return document.querySelector(s)},esc=function(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})};
+var tg=window.Telegram&&window.Telegram.WebApp,INIT=(tg&&tg.initData)||'',DAY=864e5,ME=null,cur=null,D=null,S={cap:false},A=null,RC=[],F={k:'канал',req:false,p:20,w:1,subs:[],img:''},RI='';
+if(tg){try{tg.ready();tg.expand()}catch(e){}}
+function p2(n){return(n<10?'0':'')+n}
+function fmt(t){var x=new Date(t);return p2(x.getDate())+'.'+p2(x.getMonth()+1)+'.'+x.getFullYear()+' '+p2(x.getHours())+':'+p2(x.getMinutes())}
+function left(t){var m=Math.max(0,Math.floor((t-Date.now())/6e4)),d=Math.floor(m/1440),h=Math.floor(m%1440/60);return d?d+'д '+h+'ч':h?h+'ч '+(m%60)+'м':m+'м'}
+var tt;function toast(m){var e=$('#toast');e.textContent=m;e.classList.add('on');clearTimeout(tt);tt=setTimeout(function(){e.classList.remove('on')},2400)}
+function shake(e){e.classList.remove('shake');void e.offsetWidth;e.classList.add('shake')}
+function op(id){$(id).classList.add('on')}function cl(id){$(id).classList.remove('on')}
+function fail(x){toast(x&&x.message?x.message:'Ошибка, попробуй ещё раз')}
+function api(o,b){return fetch('/api/'+o,{method:'POST',headers:{'Content-Type':'application/json','X-Init':INIT},body:JSON.stringify(b||{})}).then(function(r){return r.json().catch(function(){return{}}).then(function(j){if(!r.ok)throw new Error(r.status===401?'Открой приложение заново из Telegram':(j.err||'Ошибка '+r.status));return j})})}
+function openTG(u){if(tg&&tg.openTelegramLink&&/^https:\/\/t\.me\//.test(u))tg.openTelegramLink(u);else window.open(u,'_blank')}
+function isAdm(){return ME&&ME.role!=='user'}function isOwner(){return ME&&ME.role==='owner'}
+function clean(h){var t=document.createElement('template');t.innerHTML=h;var OK={B:1,I:1,U:1,S:1,STRONG:1,EM:1,CODE:1,PRE:1,A:1,BR:1,BLOCKQUOTE:1,DEL:1,INS:1,'TG-SPOILER':1,'TG-EMOJI':1};
+(function w(n){[].slice.call(n.childNodes).forEach(function(c){if(c.nodeType===3)return;if(c.nodeType!==1||!OK[c.tagName]){c.remove();return}
+if(c.tagName==='TG-SPOILER'){var sp=document.createElement('span');sp.className='spl';sp.textContent=c.textContent;c.replaceWith(sp);return}
+if(c.tagName==='TG-EMOJI'){c.replaceWith(document.createTextNode(c.textContent));return}
+var h=c.tagName==='A'?(c.getAttribute('href')||''):'';[].slice.call(c.attributes).forEach(function(a){c.removeAttribute(a.name)});
+if(c.tagName==='A'&&/^(https?:|tg:)/i.test(h)){c.setAttribute('href',h);c.setAttribute('target','_blank');c.setAttribute('rel','noopener')}w(c)})})(t.content);return t.innerHTML}
+function rdImg(f,cb){var r=new FileReader();r.onload=function(){var i=new Image();i.onload=function(){var k=Math.min(1,1280/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=Math.round(i.width*k);c.height=Math.round(i.height*k);c.getContext('2d').drawImage(i,0,0,c.width,c.height);cb(c.toDataURL('image/jpeg',.85))};i.src=r.result};r.readAsDataURL(f)}
+
+/* окна: смахивание за полоску */
+document.querySelectorAll('.gw').forEach(function(g){var sh=g.parentNode,ov=sh.parentNode,y0=0,dy=0,on=0;
+g.addEventListener('pointerdown',function(e){on=1;y0=e.clientY;dy=0;sh.style.transition='none';g.setPointerCapture(e.pointerId)});
+g.addEventListener('pointermove',function(e){if(!on)return;dy=Math.max(0,e.clientY-y0);sh.style.transform='translateY('+dy+'px)'});
+function up(){if(!on)return;on=0;sh.style.transition='transform .22s';if(dy>80){sh.style.transform='translateY(100%)';setTimeout(function(){ov.classList.remove('on');sh.style.transform='';sh.style.transition=''},210)}else{sh.style.transform='';setTimeout(function(){sh.style.transition=''},230)}}
+g.addEventListener('pointerup',up);g.addEventListener('pointercancel',up)});
+document.querySelectorAll('.ov').forEach(function(o){o.addEventListener('click',function(e){if(e.target===o)o.classList.remove('on')})});
+document.addEventListener('click',function(e){var s=e.target.closest('.spl');if(s)s.classList.toggle('o')});
+var CF=null;
+function ask(h,t,y,fn){$('#cfH').textContent=h;$('#cfT').textContent=t;$('#cfY').textContent=y;CF=fn;op('#ovC')}
+$('#cfY').onclick=function(){cl('#ovC');if(CF)CF()};$('#cfN').onclick=function(){cl('#ovC')};
+
+/* темы */
+try{var th=localStorage.getItem('th');if(th){document.documentElement.setAttribute('data-theme',th);document.querySelectorAll('#dots i').forEach(function(i){i.classList.toggle('on',i.dataset.t===th)})}}catch(e){}
+$('#dots').onclick=function(e){var t=e.target.dataset.t;if(!t)return;document.documentElement.setAttribute('data-theme',t);try{localStorage.setItem('th',t)}catch(x){}document.querySelectorAll('#dots i').forEach(function(i){i.classList.toggle('on',i===e.target)})};
+
+/* режимы и вкладки */
+function setMode(m){document.querySelectorAll('#mode button').forEach(function(b){b.classList.toggle('on',b.dataset.m===m)});$('#vPost').classList.toggle('hide',m!=='post');$('#vBot').classList.toggle('hide',m!=='bot');if(m==='bot')tab(TAB)}
+$('#mode').onclick=function(e){if(e.target.dataset.m)setMode(e.target.dataset.m)};
+var TAB='prof';
+function tab(v){if(v==='adm'&&!isAdm())v='prof';TAB=v;document.querySelectorAll('#tabs button').forEach(function(b){b.classList.toggle('on',b.dataset.v===v)});
+['prof','list','rec','new','adm'].forEach(function(k){$('#b'+{prof:'Prof',list:'List',rec:'Rec',new:'New',adm:'Adm'}[k]).classList.toggle('hide',k!==v)});
+if(v==='prof')rProf();if(v==='list')rList();if(v==='rec')rRec();if(v==='adm')rAdm()}
+$('#tabs').onclick=function(e){if(e.target.dataset.v)tab(e.target.dataset.v)};
+
+/* участие */
+function openG(id){api('get',{id:id}).then(function(g){cur=g;S={cap:false};$('#mode').classList.remove('hide');setMode('post');rPost();rTasks();if(!g.me.joined&&g.st==='on')mkCap()}).catch(fail)}
+function rPost(){var g=cur,dn=g.st==='done',j=g.me.joined;
+$('#pc').innerHTML=(g.img?'<img class="pi" src="'+g.img+'">':'')+(g.html?'<div class="pb">'+clean(g.html)+'</div>':'<h1>'+esc(g.t)+'</h1>')+'<div class="meta"><span>'+(dn?'завершён':'ещё '+left(g.end))+'</span><span>победителей: '+g.w+'</span><span>участников: '+g.parts+'</span></div>'+(dn?'<div class="lbl" style="margin-top:14px">Победители</div>'+(g.win.map(esc).join(', ')||'Участников не было'):'');
+$('#capCard').classList.toggle('hide',dn||S.cap||j);$('#openT').classList.toggle('hide',dn||!(S.cap||j));$('#openT').textContent=j?'Мои условия и шанс':'Открыть задания'}
+function rTasks(){var g=cur,m=g.me,need=g.subs.some(function(s,i){return s.req&&!m.done[i]});
+$('#tk').innerHTML=g.subs.length?g.subs.map(function(s,i){return '<div class="tr"><div class="tt"><span class="pl">'+s.k+'</span><b>'+esc(s.h)+'</b><span class="mut">'+(s.req?'обязательно':'+'+s.p+'% к шансу')+'</span></div>'+(m.done[i]?'<span class="okk">засчитано</span>':'<div class="ac2"><button class="b g s" data-go="'+i+'">'+(s.k==='буст'?'Забустить':'Перейти')+'</button><button class="b s" data-ck="'+i+'">Проверить</button></div>')+'</div>'}).join(''):'<div class="mut">Условий нет, просто жми «Участвовать»</div>';
+var j=$('#jn');j.disabled=m.joined||need||g.st!=='on';j.textContent=m.joined?'Ты участвуешь':need?'Сначала обязательные условия':(g.bb||'Участвовать');
+var mx=1+g.subs.reduce(function(a,s){return a+(s.req?0:s.p/100)},0);$('#mul').textContent='×'+m.mult.toFixed(2);$('#rg').style.strokeDashoffset=mx>1?220-220*((m.mult-1)/(mx-1)):220}
+$('#tk').onclick=function(e){var t=e.target,go=t.dataset.go,ck=t.dataset.ck;
+if(go!==undefined){var s=cur.subs[go];openTG('https://t.me/'+s.h.replace(/^@/,'')+(s.k==='буст'?'?boost':''))}
+if(ck!==undefined){t.textContent='Проверяем…';t.disabled=true;api('check',{id:cur.id,idx:+ck}).then(function(r){cur=r.g;rTasks();rPost();toast(r.ok?'Засчитано':'Условие не выполнено')}).catch(function(x){fail(x);rTasks()})}};
+$('#jn').onclick=function(){api('join',{id:cur.id}).then(function(g){cur=g;rTasks();rPost();toast('Ты участвуешь')}).catch(fail)};
+$('#openT').onclick=function(){rTasks();op('#ovT')};
+var seq=[];
+function mkCap(){seq=[];var c=$('#cap');c.innerHTML='';api('cap').then(function(r){r.pts.forEach(function(p){var d=document.createElement('div');d.className='pt';d.textContent=p.n;d.dataset.n=p.n;d.style.cssText='left:'+p.x+'%;top:'+p.y+'%;--r:'+p.r+'deg';c.appendChild(d)})}).catch(fail)}
+$('#cap').onclick=function(e){var n=+e.target.dataset.n;if(!n||e.target.classList.contains('done'))return;seq.push(n);
+if(n!==seq.length){shake(this);setTimeout(mkCap,350);return}e.target.classList.add('done');
+if(seq.length===3)api('capok',{order:seq}).then(function(){S.cap=true;rPost();rTasks();op('#ovT')}).catch(function(x){shake($('#cap'));fail(x);setTimeout(mkCap,500)})};
+$('#capRe').onclick=mkCap;
+
+/* профиль */
+function rProf(){var s=ME.st;$('#bProf').innerHTML='<div class="card"><div class="lbl">Моя статистика</div><div class="stats"><div class="stat"><b>'+s.p+'</b><span class="mut">участий</span></div><div class="stat"><b>'+s.w+'</b><span class="mut">побед</span></div><div class="stat"><b>'+s.a+'</b><span class="mut">активных</span></div></div></div>'}
+
+/* мои розыгрыши */
+function rList(){api('list').then(function(a){$('#bList').innerHTML=a.length?a.map(function(g){return '<button class="li" data-i="'+g.id+'"><span><b>'+esc(g.t)+'</b><br><span class="mut">'+esc(g.ch)+' · '+g.parts+' уч.</span>'+(g.win.length?'<br><span class="mut">победили: '+g.win.map(esc).join(', ')+'</span>':'')+'</span><span class="pl">'+(g.st==='on'?'идёт':'завершён')+'</span></button>'}).join(''):'<div class="card"><div class="mut">Розыгрышей пока нет. Создай первый во вкладке «Создать».</div></div>'}).catch(fail)}
+$('#bList').onclick=function(e){var b=e.target.closest('.li');if(!b)return;api('get',{id:+b.dataset.i}).then(function(g){D=g;rD();op('#ovD')}).catch(fail)};
+function rD(){var g=D,on=g.st==='on',can=g.mine||isAdm();
+$('#dc').innerHTML='<h1>'+esc(g.t)+'</h1><div class="meta"><span>'+(on?'идёт · ещё '+left(g.end):'завершён')+'</span><span>итоги '+fmt(g.end)+'</span><span>'+g.parts+' уч.</span><span>побед.: '+g.w+'</span></div><div class="lbl" style="margin-top:14px">Канал публикации</div>'+esc(g.ch)
++(g.subs.length?'<div class="lbl">Условия</div>'+g.subs.map(function(s){return '<div class="tr"><div class="tt"><span class="pl">'+s.k+'</span><b>'+esc(s.h)+'</b></div><span class="mut">'+(s.req?'обязательно':'+'+s.p+'%')+'</span></div>'}).join(''):'')
++(g.win.length?'<div class="lbl">Победители</div>'+g.win.map(function(w,i){return '<div class="tr"><span><b>'+(i+1)+'</b> &nbsp;'+esc(w)+'</span><span class="pl">победитель</span></div>'}).join(''):'')
++'<div class="lbl">Ссылка на розыгрыш</div><div class="lk">'+esc(g.link)+'</div>'
++'<div style="display:grid;gap:10px;margin-top:16px"><button class="b g" data-a="view">Открыть как участник</button><button class="b g" data-a="share">Поделиться ссылкой</button>'
++(on&&can?'<button class="b g" data-a="rec">В рекомендации со скидкой</button><button class="b r" data-a="fin">Завершить сейчас</button>':'')
++(isAdm()?'<div class="lbl" style="margin:8px 0 0">Только для админов</div>'+(on?'<button class="b g" data-a="ext">Продлить на 1 день</button>':'<button class="b g" data-a="rr">Перевыбрать победителей</button>')+'<button class="b g" data-a="free">В рекомендации бесплатно</button>'+(g.win.length?'<button class="b g" data-a="cp">Скопировать победителей</button>':'')+'<button class="b r" data-a="rm">Удалить розыгрыш</button>':'')+'</div>'}
+function act(o,m){api('act',{id:D.id,op:o}).then(function(){toast(m);return api('get',{id:D.id})}).then(function(g){D=g;rD();rList()}).catch(fail)}
+$('#dc').onclick=function(e){var a=e.target.dataset.a;if(!a)return;var g=D;
+if(a==='view'){cl('#ovD');openG(g.id)}
+if(a==='share')openTG('https://t.me/share/url?url='+encodeURIComponent(g.link));
+if(a==='rec')openRec(g);
+if(a==='fin')ask('Завершить сейчас?','«'+g.t+'» закончится сразу, победители выберутся случайно среди участников.','Завершить',function(){act('fin','Розыгрыш завершён')});
+if(a==='ext')act('ext','+1 день');if(a==='rr')act('rr','Победители выбраны заново');if(a==='free')act('free','Добавлено в рекомендации');
+if(a==='cp'){try{navigator.clipboard.writeText(g.win.join(', ')).then(function(){toast('Скопировано')},function(){toast(g.win.join(', '))})}catch(x){toast(g.win.join(', '))}}
+if(a==='rm')ask('Удалить розыгрыш?','«'+g.t+'» пропадёт насовсем.','Удалить',function(){api('act',{id:g.id,op:'rm'}).then(function(){cl('#ovD');rList();toast('Удалено')}).catch(fail)})};
+
+/* рекомендации */
+function ins(link,disc){return '<div class="lbl">Как попасть в рекомендации</div><div>1. Отправь крипту или звёзды на <b>@HE_KOR</b><br>2. Напиши ему ссылку на свой розыгрыш<br>3. Цена договорная</div>'+(disc?'<div class="meta"><span>скидка '+ME.cfg.disc+'%: розыгрыш создан через бота</span></div>':'')+(link?'<div class="lbl">Ссылка на розыгрыш</div><div class="lk">'+esc(link)+'</div>':'')+'<a class="b" href="https://t.me/HE_KOR" target="_blank" rel="noopener" style="margin-top:14px">Написать @HE_KOR</a>'}
+function rRec(){api('recs').then(function(a){RC=a;var ad=isAdm(),h=a.length?'<div class="rg">'+a.map(function(r,i){return '<div class="rc" data-r="'+i+'">'+(r.img?'<img src="'+r.img+'">':'<div class="ph0"></div>')+'<b>'+esc(r.ch)+'</b><span class="mut">розыгрыш</span>'+(ad?'<div class="row" style="margin-top:8px"><button class="b g s" data-up="'+r.id+'">Наверх</button><button class="b r s" data-del="'+r.id+'">Удалить</button></div>'+(r.note?'<div class="mut" style="margin-top:6px">'+esc(r.note)+'</div>':''):'')+'</div>'}).join('')+'</div>':'<div class="card"><div class="mut">Рекомендаций пока нет</div></div>';
+h+='<div class="card">'+ins('',false)+'<p class="mut" style="margin-top:12px">Если розыгрыш создан через нашего бота, в его карточке есть кнопка «В рекомендации со скидкой».</p></div>';
+if(ad)h+='<button class="b" data-a="add">Добавить рекомендацию</button>';$('#bRec').innerHTML=h}).catch(fail)}
+function goRec(r){var m=/startapp=g(\d+)/.exec(r.link);if(m&&r.link.indexOf('t.me/'+ME.bot)>-1)openG(+m[1]);else openTG(r.link)}
+$('#bRec').onclick=function(e){var t=e.target;
+if(t.dataset.up!==undefined){api('rup',{id:+t.dataset.up}).then(rRec).catch(fail);return}
+if(t.dataset.del!==undefined){var id=+t.dataset.del;ask('Удалить рекомендацию?','Она пропадёт из ленты.','Удалить',function(){api('rdel',{id:id}).then(function(){rRec();toast('Удалено')}).catch(fail)});return}
+if(t.dataset.a==='add'){op('#ovR');return}
+var c=t.closest('.rc');if(c)goRec(RC[+c.dataset.r])};
+$('#rPb').onclick=function(){$('#rP').click()};
+$('#rP').onchange=function(){var f=this.files[0];this.value='';if(f)rdImg(f,function(u){RI=u;$('#rPv').src=u;$('#rPv').classList.remove('hide')})};
+$('#rAdd').onclick=function(){var c=$('#rCh').value.trim(),l=$('#rLk').value.trim();if(!c){shake($('#rCh'));return}if(!l){shake($('#rLk'));return}
+api('radd',{ch:c,link:l,note:$('#rNt').value.trim(),photo:RI}).then(function(){RI='';$('#rCh').value=$('#rLk').value=$('#rNt').value='';$('#rPv').classList.add('hide');cl('#ovR');rRec();toast('Добавлено в рекомендации')}).catch(fail)};
+function openRec(g){$('#ic').innerHTML=ins(g.link,true);op('#ovI')}
+
+/* создание */
+function rF(){$('#fw span').textContent=F.w;$('#fp span').textContent=F.req?'—':F.p+'%';$('#fp').style.opacity=F.req?.4:1;$('#fr').classList.toggle('on',F.req);
+$('#sl').innerHTML=F.subs.map(function(s,i){return '<div class="tr"><div class="tt"><span class="pl">'+s.k+'</span><b>'+esc(s.h||'канал розыгрыша')+'</b><span class="mut">'+(s.req?'обязательно':'+'+s.p+'%')+'</span></div><button class="b g s" data-rm="'+i+'">убрать</button></div>'}).join('');
+document.querySelectorAll('#fk button').forEach(function(b){b.classList.toggle('on',b.dataset.k===F.k)});$('#fh').classList.toggle('hide',F.k==='буст');$('#fbn').classList.toggle('hide',F.k!=='буст');
+$('#fPv').classList.toggle('hide',!F.img);$('#fPx').classList.toggle('hide',!F.img);if(F.img)$('#fPv').src=F.img}
+$('#fk').onclick=function(e){if(e.target.dataset.k){F.k=e.target.dataset.k;rF()}};
+$('#fr').onclick=function(){F.req=!F.req;rF()};
+$('#fw').onclick=function(e){var d=+e.target.dataset.d;if(d){F.w=Math.min(50,Math.max(1,F.w+d));rF()}};
+$('#fp').onclick=function(e){var d=+e.target.dataset.d;if(d&&!F.req){F.p=Math.min(100,Math.max(5,F.p+d));rF()}};
+$('#sl').onclick=function(e){if(e.target.dataset.rm!==undefined){F.subs.splice(+e.target.dataset.rm,1);rF()}};
+$('#fAdd').onclick=function(){var h='';
+if(F.k==='буст'){if(F.subs.some(function(x){return x.k==='буст'})){toast('Буст уже добавлен');return}}
+else{h=$('#fh').value.trim();if(!h){shake($('#fh'));return}if(!/^(@|https?:)/.test(h))h='@'+h}
+F.subs.push({k:F.k,h:h,p:F.req?0:F.p,req:F.req?1:0});$('#fh').value='';rF()};
+$('#fPb').onclick=function(){$('#fP').click()};
+$('#fPx').onclick=function(){F.img='';rF()};
+$('#fP').onchange=function(){var f=this.files[0];this.value='';if(f)rdImg(f,function(u){F.img=u;rF()})};
+$('#fdt').oninput=function(){var d=this.value.replace(/\D/g,'').slice(0,8);this.value=d.slice(0,2)+(d.length>2?'.'+d.slice(2,4):'')+(d.length>4?'.'+d.slice(4):'')};
+$('#ftm').oninput=function(){var d=this.value.replace(/\D/g,'').slice(0,4);this.value=d.slice(0,2)+(d.length>2?':'+d.slice(2):'')};
+$('#chips').onclick=function(e){var n=+e.target.dataset.n;if(!n)return;var x=new Date(Date.now()+n*DAY);$('#fdt').value=p2(x.getDate())+'.'+p2(x.getMonth()+1)+'.'+x.getFullYear();$('#ftm').value=p2(x.getHours())+':'+p2(x.getMinutes())};
+function pend(){var a=/^(\d\d)\.(\d\d)\.(\d{4})$/.exec($('#fdt').value),b=/^(\d\d):(\d\d)$/.exec($('#ftm').value);if(!a||!b)return 0;var x=new Date(+a[3],a[2]-1,+a[1],+b[1],+b[2]);if(x.getDate()!==+a[1]||x.getMonth()!==a[2]-1||+b[1]>23||+b[2]>59)return 0;return x.getTime()}
+$('#fGo').onclick=function(){var t=$('#fT').value.trim(),c=$('#fC').value.trim(),e=pend(),b=this;
+if(!t){shake($('#fT'));toast('Впиши название');return}
+if(!c){shake($('#fC'));toast('Укажи канал публикации');return}
+if(!e||e<Date.now()+6e4){shake($('#fdt'));toast('Дата: ДД.ММ.ГГГГ и ЧЧ:ММ, в будущем');return}
+b.disabled=true;b.textContent='Отправляем…';
+api('draft',{t:t,d:$('#fD').value,ch:c,subs:F.subs,w:F.w,end:e,bp:$('#fBp').value.trim()||'Участвовать',bb:$('#fBb').value.trim()||'Участвовать',photo:F.img}).then(function(){
+toast('Черновик отправлен в чат с ботом');$('#fT').value='';$('#fD').value='';$('#fC').value='';$('#fBp').value=$('#fBb').value='Участвовать';F.img='';F.subs=[];F.w=1;rF();
+setTimeout(function(){if(tg&&tg.close)tg.close()},1100)}).catch(fail).then(function(){b.disabled=false;b.textContent='Отправить в чат'})};
+
+/* админ-панель (данные приходят только админам, права проверяет сервер) */
+function rAdm(){if(!isAdm())return;admOp('ov')}
+function admOp(o,x){api('adm',Object.assign({op:o},x||{})).then(function(v){A=v;drawAdm()}).catch(fail)}
+function drawAdm(){var s=A.stats,c=A.cfg;
+var h='<div class="card"><div class="lbl">Статистика</div><div class="stats"><div class="stat"><b>'+s.g+'</b><span class="mut">розыгрышей</span></div><div class="stat"><b>'+s.on+'</b><span class="mut">активных</span></div><div class="stat"><b>'+s.p+'</b><span class="mut">участий</span></div></div><div class="meta"><span>пользователей: '+s.users+'</span><span>рекомендаций: '+s.r+'</span><span>в бане: '+A.bans.length+'</span></div></div>';
+h+='<div class="card"><div class="lbl">Администраторы</div><div class="tr"><b>@HE_KOR</b><span class="pl">владелец</span></div>'+A.admins.map(function(u){return '<div class="tr"><b>@'+esc(u)+'</b><button class="b g s" data-ra="'+esc(u)+'">Убрать</button></div>'}).join('')+'<div class="row" style="margin-top:12px"><input class="in" id="aU" placeholder="@username"><button class="b s" data-a="addA">Добавить</button></div><p class="mut" style="margin-top:8px">Админ получает все возможности, кроме удаления владельца.</p></div>';
+h+='<div class="card"><div class="lbl">Чёрный список</div>'+A.bans.map(function(u){return '<div class="tr"><b>@'+esc(u)+'</b><button class="b g s" data-rb="'+esc(u)+'">Разбанить</button></div>'}).join('')+'<div class="row" style="margin-top:'+(A.bans.length?12:0)+'px"><input class="in" id="bU" placeholder="@username"><button class="b s" data-a="addB">В бан</button></div></div>';
+h+='<div class="card"><div class="lbl">Рассылка всем</div><textarea class="in" id="bcT" placeholder="Текст сообщения" style="min-height:64px"></textarea><button class="b g" data-a="bc" style="margin-top:10px">Отправить</button>'+(A.bc?'<p class="mut" style="margin-top:8px">Последняя: '+fmt(A.bc.ts)+' · '+esc(A.bc.x)+'</p>':'')+'</div>';
+h+='<div class="card"><div class="lbl">Настройки</div><div class="row sp"><span>Скидка на рекомендации</span><div class="stp"><button data-dd="-5">−</button><span>'+c.disc+'%</span><button data-dd="5">+</button></div></div><div class="row sp" style="margin-top:12px"><span>Техработы (участие закрыто)</span><div class="tg'+(c.maint?' on':'')+'" data-tg="1"><i></i></div></div></div>';
+h+='<div class="card"><div class="lbl">Журнал</div>'+(A.log.length?A.log.map(function(l){return '<div class="mut" style="padding:3px 0">'+fmt(l.ts)+' · @'+esc(l.un)+' · '+esc(l.m)+'</div>'}).join(''):'<div class="mut">Пока пусто</div>')+'</div>';
+$('#bAdm').innerHTML=h}
+function okUn(v){v=v.trim().replace(/^@/,'');return /^[A-Za-z0-9_]{3,32}$/.test(v)?v:''}
+$('#bAdm').onclick=function(e){var t=e.target,a=t.dataset.a;
+if(a==='addA'){var v=okUn($('#aU').value);if(!v){shake($('#aU'));toast('Нужен корректный @username');return}admOp('addA',{un:v});toast('Админ добавлен')}
+if(t.dataset.ra){var u=t.dataset.ra;ask('Убрать из админов?','@'+u+' потеряет доступ к панели.','Убрать',function(){admOp('rmA',{un:u})})}
+if(a==='addB'){var b=okUn($('#bU').value);if(!b){shake($('#bU'));return}admOp('ban',{un:b})}
+if(t.dataset.rb)admOp('unban',{un:t.dataset.rb});
+if(a==='bc'){var x=$('#bcT').value.trim();if(!x){shake($('#bcT'));return}ask('Отправить всем?','Сообщение получат все пользователи бота.','Отправить',function(){admOp('bc',{text:x});toast('Рассылка запущена')})}
+if(t.dataset.dd)admOp('cfg',{disc:A.cfg.disc+ +t.dataset.dd});
+if(t.closest('[data-tg]'))admOp('cfg',{maint:!A.cfg.maint})};
+
+/* запуск */
+function lock(){$('#ld').classList.add('hide');$('#lock').classList.remove('hide')}
+if(!INIT)lock();
+else api('me').then(function(m){ME=m;$('#ld').classList.add('hide');$('#tAdm').classList.toggle('hide',!isAdm());
+var sp=(tg.initDataUnsafe&&tg.initDataUnsafe.start_param)||'',mt=/^g(\d+)$/.exec(sp);
+if(mt)openG(+mt[1]);else setMode('bot');rF();var x=new Date(Date.now()+3*DAY);$('#fdt').value=p2(x.getDate())+'.'+p2(x.getMonth()+1)+'.'+x.getFullYear();$('#ftm').value=p2(x.getHours())+':'+p2(x.getMinutes())}).catch(function(x){lock();fail(x)});
+</script>
+</body>
+                                                                                               </html>
